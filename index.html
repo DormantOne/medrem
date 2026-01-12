@@ -1,209 +1,150 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHF Medication Calendar Generator</title>
+    <title>CHF Med Scheduler - Universal</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 24px;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid;
-        }
-        .am-section {
-            background-color: #fff8e1;
-            border-left-color: #ffc107; /* Amber for Morning */
-        }
-        .pm-section {
-            background-color: #e8eaf6;
-            border-left-color: #3f51b5; /* Indigo for Evening */
-        }
-        h2 {
-            margin-top: 0;
-            font-size: 18px;
-            color: #444;
-            display: flex;
-            align-items: center;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        textarea {
-            width: 100%;
-            height: 80px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: vertical;
-            font-family: inherit;
-            box-sizing: border-box; /* Fixes padding issues */
-        }
-        .time-select {
-            margin-bottom: 10px;
-        }
-        .time-select input {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .note {
-            font-size: 12px;
-            color: #777;
-            text-align: center;
-            margin-top: 15px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        .section { margin-bottom: 30px; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
+        .am { background-color: #fffde7; border-left: 5px solid #fbc02d; }
+        .pm { background-color: #e8eaf6; border-left: 5px solid #3949ab; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input[type="time"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; }
+        textarea { height: 70px; }
+        
+        .btn-group { display: flex; gap: 10px; flex-direction: column; }
+        
+        button { border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; text-align: center; text-decoration: none; display: block; }
+        
+        /* Google Button Style */
+        .btn-google { background-color: #4285F4; color: white; }
+        .btn-google:hover { background-color: #3367d6; }
+        
+        /* Apple/Outlook Button Style */
+        .btn-apple { background-color: #333; color: white; }
+        .btn-apple:hover { background-color: #000; }
+
+        .troubleshoot { font-size: 0.9em; background: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin-top: 20px; border: 1px solid #ffcdd2; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>CHF Medication Schedule</h1>
-    <p style="text-align:center; color:#666; font-size: 14px;">Enter your meds below to create a daily calendar schedule.</p>
+    <h1>CHF Medication Scheduler</h1>
+    <p style="text-align:center; color:#666;">Choose the button that matches your calendar.</p>
 
-    <!-- Morning Section -->
-    <div class="section am-section">
-        <h2>☀️ Morning Medications</h2>
+    <!-- AM SECTION -->
+    <div class="section am">
+        <h2>☀️ Morning Meds</h2>
+        <label>Time:</label>
+        <input type="time" id="amTime" value="08:00">
+        <label>Medications:</label>
+        <textarea id="amMeds" placeholder="List Morning meds here..."></textarea>
         
-        <div class="time-select">
-            <label for="amTime">Remind me every day at:</label>
-            <input type="time" id="amTime" value="08:00">
+        <div class="btn-group">
+            <!-- Method A: Direct Google Link -->
+            <button class="btn-google" onclick="addToGoogle('AM')">Add to Google Calendar</button>
+            <!-- Method B: Apple/Outlook File -->
+            <button class="btn-apple" onclick="downloadICS('AM')">Download for Apple / Outlook</button>
         </div>
-
-        <label for="amMeds">List your Morning Meds:</label>
-        <textarea id="amMeds" placeholder="e.g., \n- Lasix 20mg\n- Lisinopril 10mg"></textarea>
     </div>
 
-    <!-- Evening Section -->
-    <div class="section pm-section">
-        <h2>🌙 Evening Medications</h2>
+    <!-- PM SECTION -->
+    <div class="section pm">
+        <h2>🌙 Evening Meds</h2>
+        <label>Time:</label>
+        <input type="time" id="pmTime" value="20:00">
+        <label>Medications:</label>
+        <textarea id="pmMeds" placeholder="List Evening meds here..."></textarea>
         
-        <div class="time-select">
-            <label for="pmTime">Remind me every day at:</label>
-            <input type="time" id="pmTime" value="20:00">
+        <div class="btn-group">
+            <button class="btn-google" onclick="addToGoogle('PM')">Add to Google Calendar</button>
+            <button class="btn-apple" onclick="downloadICS('PM')">Download for Apple / Outlook</button>
         </div>
-
-        <label for="pmMeds">List your Evening Meds:</label>
-        <textarea id="pmMeds" placeholder="e.g., \n- Coreg 6.25mg\n- Baby Aspirin"></textarea>
     </div>
 
-    <button onclick="generateCalendar()">Download Calendar File</button>
-    <p class="note">This file works with Google Calendar, Outlook, and Apple Calendar.</p>
+    <div class="troubleshoot">
+        <strong>⚠️ iPhone / iPad Users: READ THIS</strong><br>
+        1. When you tap "Download for Apple", it might save to your <strong>Files App</strong> (blue folder icon).<br>
+        2. Go to your home screen, find the "Files" app.<br>
+        3. Tap the file (e.g., "AM_Meds.ics").<br>
+        4. Tap the <strong>Share Icon</strong> (square with arrow) at the top right.<br>
+        5. Scroll and tap the <strong>Calendar</strong> app icon to add it.
+    </div>
 </div>
 
 <script>
-    function generateCalendar() {
-        // 1. Get User Input
-        const amMeds = document.getElementById('amMeds').value;
-        const pmMeds = document.getElementById('pmMeds').value;
-        const amTime = document.getElementById('amTime').value;
-        const pmTime = document.getElementById('pmTime').value;
-
-        if (!amMeds && !pmMeds) {
-            alert("Please enter at least one medication.");
-            return;
-        }
-
-        // 2. Helper to format date strings for ICS format (YYYYMMDDTHHmm00)
-        function formatDate(dateString) {
-            return dateString.replace(/[-:]/g, '') + '00';
-        }
-
-        // 3. Create a start date (Tomorrow) to begin the recurring schedule
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
+    // 1. Logic for Google Calendar (Opens a web link directly - most reliable for Google)
+    function addToGoogle(type) {
+        const isAM = type === 'AM';
+        const meds = document.getElementById(isAM ? 'amMeds' : 'pmMeds').value;
+        const timeStr = document.getElementById(isAM ? 'amTime' : 'pmTime').value;
         
-        const year = tomorrow.getFullYear();
-        const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const day = String(tomorrow.getDate()).padStart(2, '0');
-        const datePrefix = `${year}${month}${day}`;
+        if (!meds) { alert("Please list your medications first."); return; }
 
-        // 4. Build the ICS File Content
-        let icsContent = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//CHF Med Tracker//EN\r\n";
+        // Calc times for URL
+        const now = new Date();
+        const start = new Date(now);
+        start.setDate(start.getDate() + 1); // Start tomorrow
+        const [h, m] = timeStr.split(':');
+        start.setHours(h, m, 0);
 
-        // Add Morning Event if data exists
-        if (amMeds) {
-            const [hrs, mins] = amTime.split(':');
-            const startStr = `${datePrefix}T${hrs}${mins}00`;
-            // End time is 15 mins after start
-            let endDateObj = new Date(year, parseInt(month)-1, parseInt(day), parseInt(hrs), parseInt(mins) + 15);
-            const endStr = endDateObj.toISOString().replace(/[-:]/g, '').split('.')[0] + "Z"; // Fallback calc (simplified below)
-            
-            // Note: We use Floating time (no Z) for start to respect user's local time zone on import
-            icsContent += `BEGIN:VEVENT\r\n` +
-                          `SUMMARY:☀️ Morning CHF Meds\r\n` +
-                          `DTSTART:${startStr}\r\n` +
-                          `RRULE:FREQ=DAILY\r\n` +
-                          `DESCRIPTION:Take the following:\\n${amMeds.replace(/\n/g, '\\n')}\r\n` +
-                          `BEGIN:VALARM\r\nTRIGGER:-PT5M\r\nACTION:DISPLAY\r\nDESCRIPTION:Time for AM Meds\r\nEND:VALARM\r\n` +
-                          `END:VEVENT\r\n`;
-        }
+        const end = new Date(start);
+        end.setMinutes(end.getMinutes() + 15); // 15 min duration
 
-        // Add Evening Event if data exists
-        if (pmMeds) {
-            const [hrs, mins] = pmTime.split(':');
-            const startStr = `${datePrefix}T${hrs}${mins}00`;
-            
-            icsContent += `BEGIN:VEVENT\r\n` +
-                          `SUMMARY:🌙 Evening CHF Meds\r\n` +
-                          `DTSTART:${startStr}\r\n` +
-                          `RRULE:FREQ=DAILY\r\n` +
-                          `DESCRIPTION:Take the following:\\n${pmMeds.replace(/\n/g, '\\n')}\r\n` +
-                          `BEGIN:VALARM\r\nTRIGGER:-PT5M\r\nACTION:DISPLAY\r\nDESCRIPTION:Time for PM Meds\r\nEND:VALARM\r\n` +
-                          `END:VEVENT\r\n`;
-        }
+        // Format for Google URL: YYYYMMDDTHHMMSS
+        const fmt = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        
+        const title = isAM ? "☀️ Morning CHF Meds" : "🌙 Evening CHF Meds";
+        const details = "MEDICATIONS:\n" + meds;
+        
+        // Build URL
+        const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${fmt(start)}/${fmt(end)}&details=${encodeURIComponent(details)}&recur=RRULE:FREQ=DAILY&sf=true&output=xml`;
+        
+        window.open(url, '_blank');
+    }
 
-        icsContent += "END:VCALENDAR";
+    // 2. Logic for Apple/Outlook (Download .ics file)
+    function downloadICS(type) {
+        const isAM = type === 'AM';
+        const meds = document.getElementById(isAM ? 'amMeds' : 'pmMeds').value;
+        const timeStr = document.getElementById(isAM ? 'amTime' : 'pmTime').value;
 
-        // 5. Trigger Download
-        const blob = new Blob([icsContent], { type: 'text/calendar' });
+        if (!meds) { alert("Please list your medications first."); return; }
+
+        const now = new Date();
+        const start = new Date(now);
+        start.setDate(start.getDate() + 1); // Start tomorrow
+        const [h, m] = timeStr.split(':');
+        
+        // Format YYYYMMDD
+        const y = start.getFullYear();
+        const mo = String(start.getMonth()+1).padStart(2,'0');
+        const d = String(start.getDate()).padStart(2,'0');
+        const dateStr = `${y}${mo}${d}`;
+        const timeStart = `${h}${m}00`;
+
+        const title = isAM ? "☀️ Morning CHF Meds" : "🌙 Evening CHF Meds";
+        
+        let ics = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Meds//EN\nBEGIN:VEVENT\n";
+        ics += `UID:${Date.now()}@meds\n`;
+        ics += `DTSTAMP:${dateStr}T${timeStart}\n`;
+        ics += `DTSTART;TZID=Floating:${dateStr}T${timeStart}\n`;
+        ics += `DURATION:PT15M\n`;
+        ics += `RRULE:FREQ=DAILY\n`;
+        ics += `SUMMARY:${title}\n`;
+        ics += `DESCRIPTION:${meds.replace(/\n/g, '\\n')}\n`;
+        ics += `BEGIN:VALARM\nTRIGGER:-PT5M\nACTION:DISPLAY\nDESCRIPTION:Meds\nEND:VALARM\n`;
+        ics += "END:VEVENT\nEND:VCALENDAR";
+
+        const blob = new Blob([ics], { type: 'text/calendar' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'medication_schedule.ics';
+        a.download = `${type}_Meds.ics`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
